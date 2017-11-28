@@ -34,18 +34,22 @@ public class PlayerController : MonoBehaviour {
     //Color variables for death 'animation'
 
 
+
     void Start ()
     {
 
         source = vs.GetComponent<AudioSource>();
+		playerrb = GetComponent<Rigidbody>();		
 
-        playerrb = GetComponent<Rigidbody>();
         score = 20;
-        setScoreText(scoreText);
-        endGameText.text = "";
-        msText.text = "so far, you've completed the following steps in your transition:\r\nfinally come out to yourself\r\n";
-        selfloveText.text = "";
+        //setScoreText(scoreText);
+        
         //genderidentity = "woman";        
+
+		endGameText.text = "";
+		msText.text = "";
+		selfloveText.text = "";
+		scoreText.text = "";
 
         rend = GetComponent<Renderer>();
         initiateDeath = false;
@@ -55,18 +59,18 @@ public class PlayerController : MonoBehaviour {
 
         index = 0;
 
-        milestones[0] = "what if i'm not 100% <i>sure</i> i'm a woman?";
-        milestones[1] = "what if i regret medically transitioning? what if i don't like the changes?";
-        milestones[2] = "if this is my 'truth', why do i feel so ashamed?";
-        milestones[3] = "am i really trans? what if i'm making this all up?";
-        milestones[4] = "if i had just figured this out sooner, i could have been happy.";
-        milestones[5] = "what if i'm never perceived as a woman by those around me?";
-        milestones[6] = "why did it have to be <i>me</i>? why couldn't i just be <i>normal</i>?";
-        milestones[7] = "will i always feels like this?";
-        milestones[8] = "what if it never does 'get better'?";
-        milestones[9] = "";
+        milestones[0] = "\twhat if i'm not 100% <i>sure</i> i'm a woman?";
+        milestones[1] = "\twhat if i regret medically transitioning? what if i don't like the changes?";
+        milestones[2] = "\tif this is my 'truth', why do i feel so ashamed?";
+        milestones[3] = "\tam i really trans? what if i'm making this all up?";
+        milestones[4] = "\tif i had just figured this out sooner, i could have been happy.";
+        milestones[5] = "\twhat if i'm never perceived as a woman by those around me?";
+        milestones[6] = "\twhy did it have to be <i>me</i>? why couldn't i just be <i>normal</i>?";
+        milestones[7] = "\twill i always feels like this?";
+        milestones[8] = "\twhat if it never 'gets better'?";
+        milestones[9] = "\t";
         milestones[10] = "";
-        milestones[11] = "what the fuck was the point of transitioning if i still hate myself?";
+        milestones[11] = "\twhat the fuck was the point of transitioning if i still hate myself?";
         milestones[12] = "";
         milestones[13] = "";
         milestones[14] = "";
@@ -82,6 +86,8 @@ public class PlayerController : MonoBehaviour {
         //you are not just your body. even on your worst days, you are beautiful
 
         Shuffle(milestones, rand);
+
+		StartCoroutine(birthCoRoutine());
     }
 
     void Update () //called before rendering a frame
@@ -132,19 +138,17 @@ public class PlayerController : MonoBehaviour {
         if (other.gameObject.CompareTag("Pickup"))
         {            
             collectionMode = true;
-            Debug.Log("inside pc cm is true");
             other.gameObject.SetActive(false);
             score += step;
-            setScoreText(scoreText);
+            //setScoreText(scoreText);
             updateMSText(msText);
             source.Play();
             StartCoroutine(waitCoRoutine());
-            if (score >= (20 + 16 * step))
+            if (score >= (20 + 17 * step))
             {
                 StartCoroutine(maybeCoRoutine());
             }
             collectionMode = false;
-            Debug.Log("inside pc cm is false");
         }
         if (other.gameObject.CompareTag("the light 1"))
         {
@@ -186,99 +190,78 @@ public class PlayerController : MonoBehaviour {
         speed = 10;
     }
 
-    // IEnumerator deathCoRoutine()
-    // {
-    //     yield return new WaitForSeconds(2);
-    //     msText.text += "\r\nlived presenting as a woman, without fully understanding that you really, truly are one";
-    //     yield return new WaitForSeconds(5);    
-    //     msText.text += "\r\ncontinued to hate yourself. your face, your body, your soul";
-    //     yield return new WaitForSeconds(5);    
-    //     msText.text += "\r\ngiven up all hope";
-    //     yield return new WaitForSeconds(5);    
-    //     endGameText.text = "congratulations, you died";
-    //     scoreText.text = "";
-    //     initiateDeath = true;
-    // }
+     IEnumerator deathCoRoutine()
+     {
+         yield return new WaitForSeconds(2);
+         msText.text += "\r\ni can't take this anymore";
+         yield return new WaitForSeconds(5);    
+         msText.text += "\r\nfuck... EVERYTHING";
+         yield return new WaitForSeconds(5);    
+         msText.text += "\r\ni give up";
+         yield return new WaitForSeconds(5);    
+         endGameText.text = "congratulations, you died";
+         scoreText.text = "";
+         initiateDeath = true;
+     }
+
+	IEnumerator birthCoRoutine()
+	{
+		float zero = 0;
+		float origdrag = 0;
+		origdrag = playerrb.drag;
+		playerrb.drag = 1 / zero;
+		speed = 0;
+		yield return new WaitForSeconds(1);
+		endGameText.text += "\r\nit's hitting you Hard today.";
+		yield return new WaitForSeconds(3);    
+		endGameText.text = "\r\nthoughts swirl around in your mind";
+		yield return new WaitForSeconds(3);    
+		endGameText.text = "\r\nmaking you doubt yourself,";
+		yield return new WaitForSeconds(3);    
+		endGameText.text = "\r\nmaking you wish you were anyone else";
+		yield return new WaitForSeconds(4);
+		endGameText.text = "";
+		playerrb.drag = origdrag;
+		speed = 10;
+		msText.text = "it's hitting you Hard today. thoughts swirl around in your mind\r\nmaking you doubt yourself, making you wish you were anyone else\r\n\r\nthoughts like...\r\n";
+	}
 
     IEnumerator maybeCoRoutine() 
-    {
+	{
+		yield return new WaitForSeconds(1);
         //This is a coroutine
         float zero = 0;
-        float origdrag = 0;
-        playerrb.drag = 1 / zero;
+        float origdrag = playerrb.drag;
 
-        speed = 0;
+		playerrb.drag = 1 / zero;
+		speed = 0;
         msText.enabled = false;
-        endGameText.text = "these are only a few of the \r\nquestions";
-        
+        endGameText.text = "it's scary to have these thoughts\r\n";
+		yield return new WaitForSeconds(2);
+        endGameText.text = "but so many of us do.\r\nthey drain us, popping up again and again";
+		yield return new WaitForSeconds(2);
+		endGameText.text = "each of us has our own way to deal with dysphoria,\r\nand all the uncertainty, doubt, and fear that comes with it.\r\n";
+		yield return new WaitForSeconds(2);
+		endGameText.text = "sometimes it's impossible to overcome in the moment,";
+		yield return new WaitForSeconds(2);
+		endGameText.text += "\r\nsometimes it blindsides us,\r\n";
+		yield return new WaitForSeconds(2);
+		endGameText.text += "and there's nothing we can do about it\r\n but survive until it passes";
+		yield return new WaitForSeconds(2);
+		endGameText.text = "other times, we turn to friends, to loved ones, or to ourselves, waiting out the storm.";
+		yield return new WaitForSeconds(2);
+		endGameText.text = "Or, we turn to art. To creating something, anything, to express the pain we feel.";
+		yield return new WaitForSeconds(2);
+		endGameText.text = "Or we find some other way: we try to understand it, or fight it, or placate it.";
+		yield return new WaitForSeconds(2);
+		endGameText.text = "but so many of us do,\r\nthey pop up over and over,\r\nyear after year";
+		endGameText.text = "";
+ 
+   
         yield return new WaitForSeconds(1);    
-        origdrag = playerrb.drag;
-        playerrb.drag = 1 / zero;
-        yield return new WaitForSeconds(2);
-        endGameText.text = "that we, all of us, ask ourselves";
-        yield return new WaitForSeconds(3);
-        endGameText.text = "they pop up in our minds frequently, sometimes one after the other,\r\nsometimes spread out over a longer period of self doubt.";
-        yield return new WaitForSeconds(3);
-        endGameText.text = "the answers...";
-        yield return new WaitForSeconds(3);
-        endGameText.text = "are illusive";
-        yield return new WaitForSeconds(3);    
-        endGameText.text = "sometimes we can brush them all aside with confidence";
-        yield return new WaitForSeconds(3);    
-        endGameText.text = "at other moments, one or more of them give us pause. make us question our actions, question our future, question the very identities we've worked so hard to discover";
-        //yield return new WaitForSeconds(3);    
-        //endGameText.text += "\r\nshe who answers to the name 'I'";
-        //yield return new WaitForSeconds(3);    
-        //endGameText.text += "\r\nimportant?";
-        yield return new WaitForSeconds(5);    
-        endGameText.text = "sometimes, they're impossible to find alone";
-        yield return new WaitForSeconds(5);    
-        endGameText.text = "to feel at home in your own skin?";
-        yield return new WaitForSeconds(5);    
-        endGameText.text = "to finally wake up,\r\nlook in the mirror,\r\n and love yourself?";
-        yield return new WaitForSeconds(5);    
-        endGameText.text = "why don't you love yourself <i>now</i>?";
-        yield return new WaitForSeconds(5);    
-        endGameText.text = "is it because you\r\ndon't look 'feminine' enough?";
-        yield return new WaitForSeconds(5);    
-        endGameText.text = "what is 'feminine'?";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "and who the fuck\r\ngets to say what is and is not\r\nfeminine?";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "you are a girl.\r\nyou are a woman.";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "<b>you</b>\r\nin that head of yours.\r\nshe who answers to the name of 'I'";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "you have always, always been a girl;\r\n a woman.";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "and if you're a woman\r\nin your head,\r\nin your heart,\r\nthen you're a woman\r\nin the flesh, too.";
-        yield return new WaitForSeconds(5);    
-        endGameText.text = "transitioning is important";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "i'm not saying it's wrong, or less-right";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "i'm just wondering:\r\nwithout self acceptance,\r\nwhat the fuck good is it?";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "if you complete your transition,\r\nwithout addressing your shame,";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "without understanding the\r\ninternalized societal bullshit";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "that's been drilled\r\ninto your head since birth,";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "you might come to regret\r\nbeing yourself.";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "and that would be \r\nthe most heartbreaking thing\r\nyou could possibly do.";
-        yield return new WaitForSeconds(5);
-        endGameText.text = "try something else. please.";
-        yield return new WaitForSeconds(3);
-        endGameText.text = "you are not bound to this corporeal plane.";
-        playerrb.drag = origdrag;
-        yield return new WaitForSeconds(1);    
-        speed = 10;
-        yield return new WaitForSeconds(2);    
-        endGameText.text = "";
-        yield return new WaitForSeconds(1);    
-        msText.enabled = true;
+		msText.enabled = true;        
+		playerrb.drag = origdrag;
+		speed = 10;   
     }
 
 
